@@ -1,28 +1,59 @@
-# Enterprise Banking System
+# Ledgerline Banking Core
 
-A portfolio-grade banking domain foundation, being rebuilt as a secure, testable service rather than a superficial CRUD demo.
+Ledgerline is a secure-by-design banking domain starter for customers, accounts, transfers, and auditable transaction history. It is intentionally ledger-first: money movement should be explainable, retry-safe, and testable before it is made visually impressive.
 
-## Intended capabilities
+## Product direction
 
-- Customer and account lifecycle workflows
-- Transaction validation and an auditable history
-- Clear service boundaries for balances, transfers, and notifications
-- Authentication and role-aware access as the security milestone
+The first slice establishes the language and invariants for a trustworthy banking core:
 
-## Planned technology
+- customers and accounts with explicit ownership
+- immutable ledger entries as the source of truth for money movement
+- idempotent transfer references for safe retries
+- currency-aware value objects and validation boundaries
+- auditability and reconciliation as first-class concerns
 
-Java · Spring Boot · REST APIs · PostgreSQL · JPA · Docker · GitHub Actions
+This is a portfolio foundation, not production financial software. Authentication, authorization, fraud controls, operational resilience, and regulatory requirements still need deeper implementation.
 
-## Quality bar
+## Architecture
 
-Financial workflows require explicit invariants, idempotency, validation, auditability, and careful handling of failure states. These concerns are documented before implementation so the project can grow without hiding risky assumptions.
+The project is organized around domain rules rather than a dashboard shell:
+
+- **domain** — money, account, transfer, and ledger concepts
+- **application** — commands, policies, idempotency, and use cases
+- **adapters** — HTTP, persistence, and external service boundaries
+- **db** — PostgreSQL migrations and indexes
+- **docs** — invariants, decisions, and reconciliation guidance
+
+## Technology
+
+Java 17 · Spring Boot · Spring Web · Spring Data JPA · PostgreSQL · Flyway · Bean Validation · Maven · Docker Compose · GitHub Actions
+
+## Local start
+
+    docker compose up -d
+    mvn spring-boot:run
+
+The starter health endpoint is available at GET /api/health.
+
+## Repository map
+
+    src/main/java/com/ledgerline/
+    ├── domain/       # Value objects and banking rules
+    └── web/          # Small HTTP boundary for verification
+    src/main/resources/db/migration/
+    └── V1__create_accounts_and_ledger.sql
+    docs/
+    ├── domain-invariants.md
+    └── adr/0001-ledger-first-balance-model.md
 
 ## Roadmap
 
-1. Define domain invariants and API contracts.
-2. Add account and transaction persistence with migrations.
-3. Add service, integration, and contract tests.
-4. Add authentication, authorization, and observability.
-5. Publish a safe seeded demo environment.
+1. Add account opening and customer ownership workflows.
+2. Implement transactional transfers with idempotency keys.
+3. Add balance projections and reconciliation checks.
+4. Introduce authorization context, audit events, and failure-state handling.
+5. Add contract tests and operational observability before any production claim.
 
-No credentials, payment data, or production integrations belong in this repository.
+## Portfolio note
+
+Ledgerline complements my other work by emphasizing financial correctness, invariants, and audit trails rather than a frontend-heavy operations experience.
